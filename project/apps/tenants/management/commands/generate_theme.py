@@ -6,6 +6,15 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Named (optional) arguments
         parser.add_argument(
+              '--theme_name',
+               action='store',
+               dest='theme',
+               type=str,
+               default= False,
+               help='Theme Name'
+        )
+        
+        parser.add_argument(
               '--delete_all',
                action='store',
                dest='delete_all',
@@ -15,4 +24,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        ThemeGenerator("commerce").generate(delete_all=options.get('delete_all', False))
+        ThemeGenerator(options.get('theme_name', 'commerce')).generate(delete_all=options.get('delete_all', False))

@@ -21,7 +21,8 @@ class ThemeGenerator:
             raise ValidationError("theme name is not valid")
 
 
-    def delete_all_carousels(self):
+    def clear_theme(self):
+        Section.objects.all().delete()
         carousels = Carousel.objects.select_related('page').prefetch_related(
             Prefetch('banner_set', Banner.objects.prefetch_related('title', 'sub_title', 'content', 'button_text')), 'page__page_section_set'
         )
@@ -37,7 +38,7 @@ class ThemeGenerator:
     @atomic
     def generate(self, delete_all=False):
         if delete_all:
-            self.delete_all_carousels()
+            self.clear_theme()
         self.generate_default_pages()
         self.generate_carousels(self.load_file().get('carousels', []))
 
