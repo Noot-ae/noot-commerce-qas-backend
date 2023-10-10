@@ -45,6 +45,7 @@ class TenantSerializer(serializers.ModelSerializer):
     THEME_CHOICES =( 
         ("commerce", "commerce"),
         ("legacy", "legacy"),
+        ("cosmetics", "cosmetics"),
         ("market", "market"),
         ("oasis", "oasis"),
     )
