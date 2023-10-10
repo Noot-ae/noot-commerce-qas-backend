@@ -11,7 +11,7 @@ class GetCurrencyFactorsView(CacheResponseMixin, APIView):
     
     def get(self, request):
         return Response(
-            get_base_currency_factors(self.default_currency_code)
+            get_base_currency_factors(self.default_currency_code)[self.default_currency_code]
         )
 
     @property
