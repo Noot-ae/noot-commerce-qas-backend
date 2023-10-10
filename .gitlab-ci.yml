@@ -1,0 +1,7 @@
+build-job:
+  stage: build
+  script:
+    - cd /home/mo/noot-commerce
+    - git pull origin master
+    - sudo docker-compose down
+    - sudo docker-compose up --build -d

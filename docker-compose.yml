@@ -1,0 +1,71 @@
+version: "3.9"
+
+networks:
+  my_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
+          gateway: 172.16.238.1
+
+services:
+  web:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.2
+    restart: always
+    env_file:
+      - .env
+    build: .
+    depends_on:
+      - redis
+    command: bash -c "python manage.py migrate && python manage.py create_host_schema --host ${host} && daphne -b 0.0.0.0 -p 8000 project.asgi:application"
+    volumes:
+      - .:/code
+      - ./logs:/logs
+    ports:
+      - 8000:8000
+  redis:
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.4
+    image: redis:7.0.5-alpine 
+    ports:
+      - 6379:6379
+  nginx:
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.3
+    image: pagespeed/nginx-pagespeed:latest
+    ports:
+      - 5000:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx/
+      - ./static:/opt/services/web/static  # <-- bind the static volume
+      - ./media:/opt/services/web/media  # <-- bind the media volume
+    depends_on:
+      - web
+  stripe:
+    env_file:
+      - .env
+    image: stripe/stripe-cli
+    command: listen --forward-to 172.16.238.2:8000/payment/stripe_hook/ --api-key ${STRIPE_SECRET_KEY}
+  celery:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.6
+    restart: always
+    env_file:
+      - .env
+    build: .
+    command: bash -c "celery -A project worker --pool=solo -l info --logfile=/code/logs/celery.log"    
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+      - redis

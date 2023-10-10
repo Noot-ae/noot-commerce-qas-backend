@@ -1,0 +1,8 @@
+venv
+*.pyc
+db.sqlite3
+*.env
+nginx/logs
+media
+logs
+fixtures
