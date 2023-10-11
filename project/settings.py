@@ -196,23 +196,23 @@ CHANNEL_LAYERS = {
 
 TENANT_LIMIT_SET_CALLS = False
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'daphne': {
-            'class': 'logging.FileHandler',
-            'filename': 'logs/daphne.log',
-        },
-    },
-    'loggers': {
-        'daphne': {
-            'handlers': ['daphne'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'daphne': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/daphne.log',
+#         },
+#     },
+#     'loggers': {
+#         'daphne': {
+#             'handlers': ['daphne'],
+#             'level': 'WARNING',
+#             'propagate': False,
+#         },
+#     },
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
